@@ -32,13 +32,33 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
-                    leading: Image.asset('lib/assets/logo.jpg'),
                     title: Text("${snapshot.data[index]}"),
                   ),
                 );
               },
             );
           },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FloatingActionButton(
+                heroTag: "btn1",
+                onPressed: _editarIncidente,
+                tooltip: 'Editar Incidente',
+                child: Icon(Icons.assignment),
+              ),
+              FloatingActionButton(
+                heroTag: "btn2",
+                onPressed: _abrirIncidente,
+                tooltip: 'Abrir Incidente',
+                child: Icon(Icons.add),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -48,5 +68,17 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
   void dispose() {
     incidentes.dispose();
     super.dispose();
+  }
+
+  void _abrirIncidente() {
+    setState(() {
+
+    });
+  }
+
+  void _editarIncidente() {
+    setState(() {
+
+    });
   }
 }

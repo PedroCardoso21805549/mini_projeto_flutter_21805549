@@ -32,7 +32,6 @@ class _IncidentesFechadosScreenState extends State<IncidentesFechadosScreen>{
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
-                    leading: Image.asset('lib/assets/logo.jpg'),
                     title: Text("${snapshot.data[index]}"),
                   ),
                 );
