@@ -1,9 +1,9 @@
 class ObjectIncidente {
-  String title;
-  String text;
+  String titulo;
+  String descricao;
   String morada;
-  bool resolvido = false;
-  bool fechado = false;
+  String data;
+  String estado;
 
-  ObjectIncidente({this.title, this.text});
+  ObjectIncidente({this.titulo, this.descricao, this.morada, this.data, this.estado});
 }

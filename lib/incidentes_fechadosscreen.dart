@@ -17,7 +17,7 @@ class _IncidentesFechadosScreenState extends State<IncidentesFechadosScreen>{
   Widget build(BuildContext context){
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.deepOrange,
       ),
       home: Scaffold(
         appBar: AppBar(
