@@ -21,22 +21,8 @@ class DataSource {
     var lista = [];
     int ind = 0;
     for (var i in _datasource){
-      if(i.estado != "Fechado"){
         lista.add("${i.titulo};${i.descricao};${i.morada};${i.data};${i.estado};$ind");
-      }
-      ind++;
-    }
-    return lista;
-  }
-
-  List getAllAsStringFechados() {
-    var lista = [];
-    int ind = 0;
-    for (var i in _datasource){
-      if(i.estado == "Fechado"){
-        lista.add("${i.title};${i.description};${i.morada};${i.data};${i.estado};$ind");
-      }
-      ind++;
+        ind++;
     }
     return lista;
   }

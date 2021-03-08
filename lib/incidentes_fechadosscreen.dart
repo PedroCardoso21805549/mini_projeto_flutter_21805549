@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_projeto_flutter_21805549/BLoC/incidentes_fechados.dart';
+import 'package:mini_projeto_flutter_21805549/mostra_incidentescreen.dart';
 
 class IncidentesFechadosScreen extends StatefulWidget {
   final IncidentesFechados incidentesFechados;
@@ -24,15 +25,35 @@ class _IncidentesFechadosScreenState extends State<IncidentesFechadosScreen>{
           title: Text("Lista de Incidentes Fechados"),
         ),
         body: StreamBuilder(
-          initialData: incidentesFechados.getAll(),
+          initialData: incidentesFechados.getAllAsString(),
           stream: incidentesFechados.output,
           builder:(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
+                var dados = snapshot.data[index].split(";");
+                var titulo = dados[0];
+                var descricao = dados[1];
+                var morada = dados[2];
+                var date = dados[3];
+                var estado = dados[4];
+                var indice = int.parse(dados[5]);
                 return Card(
                   child: ListTile(
-                    title: Text("${snapshot.data[index]}"),
+                    title: Text(titulo),
+                    subtitle: Text(date),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            MostraIncidente(titulo: titulo,
+                                descricao: descricao,
+                                morada: morada,
+                                date: date,
+                                estado: estado,
+                                indice: indice)),
+                      );
+                    }
                   ),
                 );
               },

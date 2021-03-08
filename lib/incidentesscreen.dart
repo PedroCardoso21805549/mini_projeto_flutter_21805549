@@ -1,8 +1,8 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mini_projeto_flutter_21805549/BLoC/incidentes.dart';
+import 'package:mini_projeto_flutter_21805549/data/datasourceFechados.dart';
 import 'package:mini_projeto_flutter_21805549/formulario_incidentescreen.dart';
 import 'package:mini_projeto_flutter_21805549/mostra_incidentescreen.dart';
 import 'package:mini_projeto_flutter_21805549/data/datasource.dart';
@@ -20,6 +20,7 @@ class IncidentesScreen extends StatefulWidget {
 class _IncidentesScreenState extends State<IncidentesScreen>{
   final incidentes = Incidentes();
   final _dataSource = DataSource.getInstance();
+  final _dataSourceFechados = DataSourceFechados.getInstance();
   final _random = Random();
 
   @override
@@ -46,19 +47,60 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                 var date = dados[3];
                 var estado = dados[4];
                 var indice = int.parse(dados[5]);
-                return Card(
-                  child: ListTile(
-                    tileColor: estado == "Resolvido"? Colors.green : Colors.white,
-                    title: Text(titulo),
-                    subtitle: Text(date),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MostraIncidente(titulo: titulo, descricao: descricao, morada: morada, date: date, estado: estado, indice: indice)),
-                      );
+                  return Dismissible(
+                    key: UniqueKey(),
+                    direction: DismissDirection.horizontal,
+                    background: Container(color: Colors.red),
+                    confirmDismiss: (direction) async {
+                      if (direction == DismissDirection.startToEnd && estado == "Resolvido") {
+                        _dataSourceFechados.insert(_dataSource.getAll()[indice]);
+                        _dataSource.remove(indice);
+
+                        final snackbar = SnackBar(
+                          content: Text(
+                              'O seu incidente foi dado como fechado.'),
+                          action: SnackBarAction(
+                            label: 'Close',
+                            onPressed: () {},
+                          ),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                        FocusScope.of(context).unfocus();
+
+                        return true;
+                      } else {
+                        final snackbar = SnackBar(
+                          content: Text('Este incidente ainda não se encontra resolvido, por isso não pode transitar para a lista dos fechados.'),
+                          action: SnackBarAction(
+                            label: 'Close',
+                            onPressed: () {},
+                          ),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                        FocusScope.of(context).unfocus();
+                        return false;
+                      }
                     },
-                  ),
-                );
+                    child: Card(
+                      child: ListTile(
+                        tileColor: estado == "Resolvido" ? Colors.green : Colors.white,
+                        title: Text(titulo),
+                        subtitle: Text(date),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                MostraIncidente(titulo: titulo,
+                                    descricao: descricao,
+                                    morada: morada,
+                                    date: date,
+                                    estado: estado,
+                                    indice: indice)),
+                          );
+                        },
+                      ),
+                    ),
+                  );
               },
             );
           },
@@ -99,6 +141,8 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackbar);
                     FocusScope.of(context).unfocus();
+
+                    Navigator.pop(context);
                   },
                   tooltip: 'Resolve Incidente',
                   child: Icon(Icons.assignment_turned_in),

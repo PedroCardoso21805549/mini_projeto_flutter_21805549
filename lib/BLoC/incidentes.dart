@@ -17,9 +17,5 @@ class Incidentes {
     _input.add(dataSource.getAllAsString());
   }
 
-  String getAllAsStringFechados(){
-    _input.add(dataSource.getAllAsStringFechados());
-  }
-
   void dispose() => _controller.close();
 }

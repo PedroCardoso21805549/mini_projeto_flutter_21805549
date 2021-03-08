@@ -1,8 +1,8 @@
 import "dart:async";
-import 'package:mini_projeto_flutter_21805549/data/datasource.dart';
+import 'package:mini_projeto_flutter_21805549/data/datasourceFechados.dart';
 
 class IncidentesFechados {
-  DataSource dataSource = DataSource.getInstance();
+  DataSourceFechados dataSourceFechados = DataSourceFechados.getInstance();
 
   StreamController _controller = StreamController();
 
@@ -10,7 +10,11 @@ class IncidentesFechados {
   Stream get output => _controller.stream;
 
   String getAll() {
-    _input.add(dataSource.getAll());
+    _input.add(dataSourceFechados.getAll());
+  }
+
+  String getAllAsString(){
+    _input.add(dataSourceFechados.getAllAsString());
   }
 
   void dispose() => _controller.close();
