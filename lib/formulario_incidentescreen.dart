@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mini_projeto_flutter_21805549/BLoC/incidentes.dart';
 import 'package:mini_projeto_flutter_21805549/data/object_incidente.dart';
 import 'package:intl/intl.dart';
 
@@ -126,7 +125,7 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
                 _dataSource.insert(obj);
 
                 Navigator.pop(context);
-                //Navigator.pop(context);
+                Navigator.pop(context);
               }
             },
             tooltip: 'Guardar',
