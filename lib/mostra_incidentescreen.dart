@@ -1,40 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:mini_projeto_flutter_21805549/BLoC/incidentes.dart';
 import 'package:mini_projeto_flutter_21805549/data/object_incidente.dart';
-import 'package:intl/intl.dart';
+import 'package:mini_projeto_flutter_21805549/data/datasource.dart';
 
-import 'data/datasource.dart';
-
-class MostraIncidente extends StatefulWidget {
-  String titulo;
-  String descricao;
-  String morada;
-  String date;
-  String estado;
-  int indice;
-
-  MostraIncidente({this.titulo, this.descricao, this.morada, this.date, this.estado, this.indice});
-
-  @override
-  _MostraIncidenteState createState() => _MostraIncidenteState();
-}
-
-class _MostraIncidenteState extends State<MostraIncidente>{
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _controllerTitulo;
-  TextEditingController _controllerDescricao;
-  TextEditingController _controllerMorada;
+class MostraIncidenteScreen extends StatelessWidget{
+  final ObjectIncidente incidente;
   final _dataSource = DataSource.getInstance();
-  final incidente = MostraIncidente();
 
-  @override
-  void initState() {
-    super.initState();
-    _controllerTitulo = new TextEditingController(text: incidente.titulo);
-    _controllerDescricao = new TextEditingController(text: incidente.descricao);
-    _controllerMorada = new TextEditingController(text: incidente.morada);
-  }
+  MostraIncidenteScreen({Key key, this.incidente}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,81 +18,34 @@ class _MostraIncidenteState extends State<MostraIncidente>{
         appBar: AppBar(
           title: Text("Detalhe Incidente"),
         ),
-        body: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.title),
-                title: TextFormField(
-                  controller: _controllerTitulo,
-                  inputFormatters: [
-                    // ignore: deprecated_member_use
-                    WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s")),
-                  ],
-                  validator: (value) {
-                    if(value.isEmpty){
-                      return "Por favor preencha este campo";
-                    }
-                    if(value.length > 25){
-                      return "Excedeu o tamanho do título";
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Título *",
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.description),
-                title: TextFormField(
-                  controller: _controllerDescricao,
-                  inputFormatters: [
-                    // ignore: deprecated_member_use
-                    WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s")),
-                  ],
-                  validator: (value) {
-                    if(value.isEmpty){
-                      return "Por favor preencha este campo";
-                    }
-                    if(value.length < 100 || value.length > 200){
-                      return "A descrição deve conter entre 100 a 200 caracteres";
-                    }
-                    return null;
-                  },
-                  minLines: 4,
-                  maxLines: 7,
-                  decoration: InputDecoration(
-                    hintText: "Descrição *",
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.add_location),
-                title: TextFormField(
-                  controller: _controllerMorada,
-                  validator: (value) {
-                    if(value.length > 60){
-                      return "Excedeu o tamanho da morada";
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Morada",
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.date_range),
-                title: Text(incidente.date),
-              ),
-              ListTile(
-                leading: Icon(Icons.assessment),
-                title: Text(incidente.estado),
-              ),
-            ],
-          ),
+        body: Column(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.title),
+              title: Text("Título"),
+              subtitle: Text(incidente.titulo),
+            ),
+            ListTile(
+              leading: Icon(Icons.description),
+              title: Text("Descrição"),
+              subtitle: Text(incidente.descricao),
+            ),
+            ListTile(
+              leading: Icon(Icons.add_location),
+              title: Text("Morada"),
+              subtitle: Text(incidente.morada),
+            ),
+            ListTile(
+              leading: Icon(Icons.date_range),
+              title: Text("Data"),
+              subtitle: Text(incidente.data),
+            ),
+            ListTile(
+              leading: Icon(Icons.assessment),
+              title: Text("Estado"),
+              subtitle: Text(incidente.estado),
+            ),
+          ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton:
@@ -130,7 +55,7 @@ class _MostraIncidenteState extends State<MostraIncidente>{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 FloatingActionButton(
-                  heroTag: "btnSave",
+                  heroTag: "btnEdit",
                   onPressed: () {
                     final snackbar = SnackBar(
                       content: Text('O seu incidente foi editado com sucesso.'),
@@ -140,29 +65,14 @@ class _MostraIncidenteState extends State<MostraIncidente>{
                       ),
                     );
 
-                    if(_formKey.currentState.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                      FocusScope.of(context).unfocus();
+                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                    FocusScope.of(context).unfocus();
 
-                      if(incidente.estado != "fechado") {
-                        final obj = ObjectIncidente(
-                          titulo: _controllerTitulo.text,
-                          descricao: _controllerDescricao.text,
-                          morada: _controllerMorada.text,
-                          data: incidente.date,
-                          estado: "Aberto",
-                        );
-
-                        _dataSource.remove(incidente.indice);
-                        _dataSource.insert(obj);
-                      }
-
-                      Navigator.pop(context);
-                      //Navigator.pop(context);
-                    }
+                    Navigator.pop(context);
+                    //Navigator.pop(context);
                   },
-                  tooltip: 'Guardar',
-                  child: Icon(Icons.save),
+                  tooltip: 'Editar',
+                  child: Icon(Icons.edit),
                 ),
                 FloatingActionButton(
                   heroTag: "btnDelete",
@@ -177,9 +87,14 @@ class _MostraIncidenteState extends State<MostraIncidente>{
                     ScaffoldMessenger.of(context).showSnackBar(snackbar);
                     FocusScope.of(context).unfocus();
 
-                    _dataSource.remove(incidente.indice);
+                    for(var h=0; h<_dataSource.getAll().length; h++){
+                      if(incidente.titulo == _dataSource.getAll()[h].titulo){
+                        _dataSource.remove(h);
+                      }
+                    }
 
                     Navigator.pop(context);
+                    //Navigator.pop(context);
                   },
                   tooltip: 'Apagar',
                   child: Icon(Icons.delete),
@@ -189,13 +104,5 @@ class _MostraIncidenteState extends State<MostraIncidente>{
           ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controllerTitulo.dispose();
-    _controllerDescricao.dispose();
-    _controllerMorada.dispose();
-    super.dispose();
   }
 }

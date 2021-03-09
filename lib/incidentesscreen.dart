@@ -42,8 +42,6 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
               itemBuilder: (context, index) {
                 var dados = snapshot.data[index].split(";");
                 var titulo = dados[0];
-                var descricao = dados[1];
-                var morada = dados[2];
                 var date = dados[3];
                 var estado = dados[4];
                 var indice = int.parse(dados[5]);
@@ -53,12 +51,12 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                     background: Container(color: Colors.red),
                     confirmDismiss: (direction) async {
                       if (direction == DismissDirection.startToEnd && estado == "Resolvido") {
+                        _dataSource.getAll()[indice].estado = "Fechado";
                         _dataSourceFechados.insert(_dataSource.getAll()[indice]);
                         _dataSource.remove(indice);
 
                         final snackbar = SnackBar(
-                          content: Text(
-                              'O seu incidente foi dado como fechado.'),
+                          content: Text('O seu incidente foi dado como fechado.'),
                           action: SnackBarAction(
                             label: 'Close',
                             onPressed: () {},
@@ -90,12 +88,7 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) =>
-                                MostraIncidente(titulo: titulo,
-                                    descricao: descricao,
-                                    morada: morada,
-                                    date: date,
-                                    estado: estado,
-                                    indice: indice)),
+                                MostraIncidenteScreen(incidente: _dataSource.getAll()[indice])),
                           );
                         },
                       ),
@@ -116,32 +109,46 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                   onPressed: () {
                     final tam = _dataSource.getAllAsString().length;
                     final lista = _dataSource.getAllAsString();
-                    int r = next(0, tam);
-                    int count = 0;
-                    bool cicle = true;
-                    while(cicle == true) {
-                      for (var i in lista) {
-                        var dados = i.split(";");
-                        if (dados[4] == "Aberto" && int.parse(dados[5]) == r) {
-                          _dataSource.getAll()[count].estado = "Resolvido";
-                          cicle = false;
+
+                    if(tam == 0){
+                      final snackbar = SnackBar(
+                        content: Text('Não existem incidentes abertos para resolver.'),
+                        action: SnackBarAction(
+                          label: 'Close',
+                          onPressed: (){},
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                      FocusScope.of(context).unfocus();
+                    } else {
+                      int r = next(0, tam);
+                      int count = 0;
+                      bool cicle = true;
+                      while (cicle == true) {
+                        for (var i in lista) {
+                          var dados = i.split(";");
+                          if (dados[4] == "Aberto" &&
+                              int.parse(dados[5]) == r) {
+                            _dataSource.getAll()[count].estado = "Resolvido";
+                            cicle = false;
+                          }
+                          count++;
                         }
-                        count++;
+                        r = next(0, tam);
+                        count = 0;
                       }
-                      r = next(0, tam);
-                      count = 0;
+
+                      final snackbar = SnackBar(
+                        content: Text(
+                            'Um dos seus incidentes foi dado como resolvido.'),
+                        action: SnackBarAction(
+                          label: 'Close',
+                          onPressed: () {},
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                      FocusScope.of(context).unfocus();
                     }
-
-                    final snackbar = SnackBar(
-                      content: Text('Um dos seus incidentes foi dado como resolvido.'),
-                      action: SnackBarAction(
-                        label: 'Close',
-                        onPressed: (){},
-                      ),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                    FocusScope.of(context).unfocus();
-
                     Navigator.pop(context);
                   },
                   tooltip: 'Resolve Incidente',

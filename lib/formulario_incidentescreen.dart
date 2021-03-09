@@ -16,6 +16,7 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
   final _controllerDescricao = TextEditingController();
   final _controllerMorada = TextEditingController();
   final _dataSource = DataSource.getInstance();
+  int counter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +46,11 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
                     }
                     if(value.length > 25){
                       return "Excedeu o tamanho do título";
+                    }
+                    for(var h=0; h<_dataSource.getAll().length; h++){
+                      if(value == _dataSource.getAll()[h].titulo){
+                        return "Incidente já existente";
+                      }
                     }
                     return null;
                   },
@@ -122,6 +128,7 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
                   estado: "Aberto",
                 );
 
+                counter++;
                 _dataSource.insert(obj);
 
                 Navigator.pop(context);
