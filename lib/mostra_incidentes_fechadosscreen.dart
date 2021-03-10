@@ -9,7 +9,7 @@ class MostraIncidenteFechadosScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    incidentesfechados.getObject(indice);
+    incidentesfechados.getAll();
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
@@ -22,34 +22,50 @@ class MostraIncidenteFechadosScreen extends StatelessWidget{
           initialData: [],
           stream: incidentesfechados.output,
           builder:(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            return Column(
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(Icons.title),
-                  title: Text("Título"),
-                  subtitle: Text(snapshot.data.tituloIncidente),
-                ),
-                ListTile(
-                  leading: Icon(Icons.description),
-                  title: Text("Descrição"),
-                  subtitle: Text(snapshot.data.descricaoIncidente),
-                ),
-                ListTile(
-                  leading: Icon(Icons.add_location),
-                  title: Text("Morada"),
-                  subtitle: Text(snapshot.data.moradaIncidente),
-                ),
-                ListTile(
-                  leading: Icon(Icons.date_range),
-                  title: Text("Data"),
-                  subtitle: Text(snapshot.data.dataIncidente),
-                ),
-                ListTile(
-                  leading: Icon(Icons.assessment),
-                  title: Text("Estado"),
-                  subtitle: Text(snapshot.data.estadoIncidente),
-                ),
-              ],
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              // ignore: missing_return
+              itemBuilder: (context, index) {
+                if(indice == index){
+                  var titulo = snapshot.data[index].tituloIncidente;
+                  var descricao = snapshot.data[index].descricaoIncidente;
+                  var morada = snapshot.data[index].moradaIncidente;
+                  var date = snapshot.data[index].dataIncidente;
+                  var estado = snapshot.data[index].estadoIncidente;
+
+                  return Column(
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(Icons.title),
+                        title: Text("Título"),
+                        subtitle: Text(titulo),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.description),
+                        title: Text("Descrição"),
+                        subtitle: Text(descricao),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.add_location),
+                        title: Text("Morada"),
+                        subtitle: Text(morada),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.date_range),
+                        title: Text("Data"),
+                        subtitle: Text(date),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.assessment),
+                        title: Text("Estado"),
+                        subtitle: Text(estado),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              },
             );
           },
         ),

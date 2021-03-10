@@ -62,6 +62,8 @@ class MostraIncidenteScreen extends StatelessWidget{
                       ),
                     ],
                   );
+                } else {
+                  return Container();
                 }
               },
             );

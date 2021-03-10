@@ -5,6 +5,8 @@ import 'package:mini_projeto_flutter_21805549/BLoC/incidentes_fechados.dart';
 import 'package:mini_projeto_flutter_21805549/formulario_incidentescreen.dart';
 import 'package:mini_projeto_flutter_21805549/mostra_incidentescreen.dart';
 
+import 'data/datasource.dart';
+
 class IncidentesScreen extends StatefulWidget {
   final Incidentes incidentes;
 
@@ -18,6 +20,7 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
   final incidentes = Incidentes();
   final incidentesFechados = IncidentesFechados();
   final _random = Random();
+  final datasource = DataSource.getInstance();
 
   @override
   Widget build(BuildContext context){
@@ -48,8 +51,7 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                     background: Container(color: Colors.red),
                     confirmDismiss: (direction) async {
                       if (direction == DismissDirection.startToEnd && estado == "Resolvido") {
-                        incidentes.setEstado(index, "Fechado");
-                        incidentesFechados.insert(titulo, descricao, morada, date, estado);
+                        incidentesFechados.insert(titulo, descricao, morada, date, "Fechado");
                         incidentes.remove(index);
 
                         final snackbar = SnackBar(
@@ -104,8 +106,8 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                     FloatingActionButton(
                       onPressed: () {
 
-                        final tam = incidentes.getAll().length;
-                        final lista = incidentes.getAllAsStringAsList();
+                        final tam = datasource.getAll().length;
+                        final lista = datasource.getAllAsString();
 
                         if(tam == 0){
                           final snackbar = SnackBar(
