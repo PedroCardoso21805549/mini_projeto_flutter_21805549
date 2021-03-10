@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mini_projeto_flutter_21805549/data/object_incidente.dart';
 import 'package:intl/intl.dart';
 
@@ -36,10 +35,6 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
                 leading: Icon(Icons.title),
                 title: TextFormField(
                   controller: _controllerTitulo,
-                  inputFormatters: [
-                    // ignore: deprecated_member_use
-                    WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s")),
-                  ],
                   validator: (value) {
                     if(value.isEmpty){
                       return "Por favor preencha este campo";
@@ -63,10 +58,6 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
                 leading: Icon(Icons.description),
                 title: TextFormField(
                   controller: _controllerDescricao,
-                  inputFormatters: [
-                    // ignore: deprecated_member_use
-                    WhitelistingTextInputFormatter(RegExp(r"[a-zA-Z]+|\s")),
-                  ],
                   validator: (value) {
                     if(value.isEmpty){
                       return "Por favor preencha este campo";
@@ -132,7 +123,7 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
                 _dataSource.insert(obj);
 
                 Navigator.pop(context);
-                Navigator.pop(context);
+                //Navigator.pop(context);
               }
             },
             tooltip: 'Guardar',

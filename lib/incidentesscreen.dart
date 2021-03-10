@@ -25,6 +25,7 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
 
   @override
   Widget build(BuildContext context){
+    incidentes.getAllAsString();
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
@@ -34,7 +35,7 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
           title: Text("Lista de Incidentes"),
         ),
         body: StreamBuilder(
-          initialData: incidentes.getAllAsString(),
+          initialData: [],
           stream: incidentes.output,
           builder:(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             return ListView.builder(
