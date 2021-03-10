@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mini_projeto_flutter_21805549/data/object_incidente.dart';
-import 'package:mini_projeto_flutter_21805549/data/datasource.dart';
+import 'package:mini_projeto_flutter_21805549/BLoC/incidentes.dart';
 
 class MostraIncidenteScreen extends StatelessWidget{
-  final ObjectIncidente incidente;
-  final _dataSource = DataSource.getInstance();
+  final incidentes = Incidentes();
+  final int indice;
 
-  MostraIncidenteScreen({Key key, this.incidente}) : super(key: key);
+  MostraIncidenteScreen({Key key, this.indice}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    incidentes.getAll();
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
@@ -18,34 +18,54 @@ class MostraIncidenteScreen extends StatelessWidget{
         appBar: AppBar(
           title: Text("Detalhe Incidente"),
         ),
-        body: Column(
-          children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.title),
-              title: Text("Título"),
-              subtitle: Text(incidente.titulo),
-            ),
-            ListTile(
-              leading: Icon(Icons.description),
-              title: Text("Descrição"),
-              subtitle: Text(incidente.descricao),
-            ),
-            ListTile(
-              leading: Icon(Icons.add_location),
-              title: Text("Morada"),
-              subtitle: Text(incidente.morada),
-            ),
-            ListTile(
-              leading: Icon(Icons.date_range),
-              title: Text("Data"),
-              subtitle: Text(incidente.data),
-            ),
-            ListTile(
-              leading: Icon(Icons.assessment),
-              title: Text("Estado"),
-              subtitle: Text(incidente.estado),
-            ),
-          ],
+        body: StreamBuilder(
+          initialData: [],
+          stream: incidentes.output,
+          builder:(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              // ignore: missing_return
+              itemBuilder: (context, index) {
+                if(indice == index){
+                  var titulo = snapshot.data[index].tituloIncidente;
+                  var descricao = snapshot.data[index].descricaoIncidente;
+                  var morada = snapshot.data[index].moradaIncidente;
+                  var date = snapshot.data[index].dataIncidente;
+                  var estado = snapshot.data[index].estadoIncidente;
+
+                  return Column(
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(Icons.title),
+                        title: Text("Título"),
+                        subtitle: Text(titulo),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.description),
+                        title: Text("Descrição"),
+                        subtitle: Text(descricao),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.add_location),
+                        title: Text("Morada"),
+                        subtitle: Text(morada),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.date_range),
+                        title: Text("Data"),
+                        subtitle: Text(date),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.assessment),
+                        title: Text("Estado"),
+                        subtitle: Text(estado),
+                      ),
+                    ],
+                  );
+                }
+              },
+            );
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton:
@@ -87,11 +107,7 @@ class MostraIncidenteScreen extends StatelessWidget{
                     ScaffoldMessenger.of(context).showSnackBar(snackbar);
                     FocusScope.of(context).unfocus();
 
-                    for(var h=0; h<_dataSource.getAll().length; h++){
-                      if(incidente.titulo == _dataSource.getAll()[h].titulo){
-                        _dataSource.remove(h);
-                      }
-                    }
+                    incidentes.remove(indice);
 
                     Navigator.pop(context);
                     //Navigator.pop(context);

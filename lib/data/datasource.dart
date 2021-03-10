@@ -1,3 +1,5 @@
+import 'package:mini_projeto_flutter_21805549/data/object_incidente.dart';
+
 class DataSource {
   final _datasource = [];
   static DataSource _instance;
@@ -21,9 +23,37 @@ class DataSource {
     var lista = [];
     int ind = 0;
     for (var i in _datasource){
-        lista.add("${i.titulo};${i.descricao};${i.morada};${i.data};${i.estado};$ind");
+        lista.add("${i.tituloIncidente};${i.descricaoIncidente};${i.moradaIncidente};${i.dataIncidente};${i.estadoIncidente};$ind");
         ind++;
     }
     return lista;
+  }
+
+  ObjectIncidente getObject(int indice) {
+    return _datasource[indice];
+  }
+
+  String getTitulo(int indice){
+    return _datasource[indice].tituloIncidente;
+  }
+
+  String getDescricao(int indice){
+    return _datasource[indice].descricaoIncidente;
+  }
+
+  String getMorada(int indice){
+    return _datasource[indice].moradaIncidente;
+  }
+
+  String getData(int indice){
+    return _datasource[indice].dataIncidente;
+  }
+
+  String getEstado(int indice){
+    return _datasource[indice].estadoIncidente;
+  }
+
+  void setEstado(int indice, String estadoNovo){
+    _datasource[indice].estado = estadoNovo;
   }
 }

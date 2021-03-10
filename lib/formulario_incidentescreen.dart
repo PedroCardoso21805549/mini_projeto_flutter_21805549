@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mini_projeto_flutter_21805549/data/object_incidente.dart';
+import 'package:mini_projeto_flutter_21805549/BLoC/incidentes.dart';
 import 'package:intl/intl.dart';
-
-import 'data/datasource.dart';
 
 class FormularioIncidente extends StatefulWidget {
   @override
@@ -14,11 +12,11 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
   final _controllerTitulo = TextEditingController();
   final _controllerDescricao = TextEditingController();
   final _controllerMorada = TextEditingController();
-  final _dataSource = DataSource.getInstance();
-  int counter = 0;
+  final incidentes = Incidentes();
 
   @override
   Widget build(BuildContext context) {
+    incidentes.getAll();
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
@@ -27,70 +25,76 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
         appBar: AppBar(
           title: Text("Formulário Incidente"),
         ),
-        body: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.title),
-                title: TextFormField(
-                  controller: _controllerTitulo,
-                  validator: (value) {
-                    if(value.isEmpty){
-                      return "Por favor preencha este campo";
-                    }
-                    if(value.length > 25){
-                      return "Excedeu o tamanho do título";
-                    }
-                    for(var h=0; h<_dataSource.getAll().length; h++){
-                      if(value == _dataSource.getAll()[h].titulo){
-                        return "Incidente já existente";
-                      }
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Título *",
+        body: StreamBuilder(
+          initialData: [],
+          stream: incidentes.output,
+          builder:(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            return Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.title),
+                    title: TextFormField(
+                      controller: _controllerTitulo,
+                      validator: (value) {
+                        if(value.isEmpty){
+                          return "Por favor preencha este campo";
+                        }
+                        if(value.length > 25){
+                          return "Excedeu o tamanho do título";
+                        }
+                        for(var h=0; h<snapshot.data.length; h++){
+                          if(value == snapshot.data[h].tituloIncidente){
+                            return "Incidente já existente";
+                          }
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Título *",
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.description),
-                title: TextFormField(
-                  controller: _controllerDescricao,
-                  validator: (value) {
-                    if(value.isEmpty){
-                      return "Por favor preencha este campo";
-                    }
-                    if(value.length < 100 || value.length > 200){
-                      return "A descrição deve conter entre 100 a 200 caracteres";
-                    }
-                    return null;
-                  },
-                  minLines: 4,
-                  maxLines: 7,
-                  decoration: InputDecoration(
-                    hintText: "Descrição *",
+                  ListTile(
+                    leading: Icon(Icons.description),
+                    title: TextFormField(
+                      controller: _controllerDescricao,
+                      validator: (value) {
+                        if(value.isEmpty){
+                          return "Por favor preencha este campo";
+                        }
+                        if(value.length < 100 || value.length > 200){
+                          return "A descrição deve conter entre 100 a 200 caracteres";
+                        }
+                        return null;
+                      },
+                      minLines: 4,
+                      maxLines: 7,
+                      decoration: InputDecoration(
+                        hintText: "Descrição *",
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.add_location),
-                title: TextFormField(
-                  controller: _controllerMorada,
-                  validator: (value) {
-                    if(value.length > 60){
-                      return "Excedeu o tamanho da morada";
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Morada",
+                  ListTile(
+                    leading: Icon(Icons.add_location),
+                    title: TextFormField(
+                      controller: _controllerMorada,
+                      validator: (value) {
+                        if(value.length > 60){
+                          return "Excedeu o tamanho da morada";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Morada",
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
         floatingActionButton:
           FloatingActionButton(
@@ -111,16 +115,7 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
                 final now = DateTime.now();
                 final date = DateFormat('yyyy/MM/dd – kk:mm').format(now);
 
-                final obj = ObjectIncidente(
-                  titulo: _controllerTitulo.text,
-                  descricao: _controllerDescricao.text,
-                  morada: _controllerMorada.text,
-                  data: date,
-                  estado: "Aberto",
-                );
-
-                counter++;
-                _dataSource.insert(obj);
+                incidentes.insert(_controllerTitulo.text, _controllerDescricao.text, _controllerMorada.text, date, "Aberto");
 
                 Navigator.pop(context);
                 //Navigator.pop(context);

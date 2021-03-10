@@ -1,5 +1,5 @@
 class DataSourceFechados {
-  final _datasourceFechados = [];
+  final _datasourcefechados = [];
   static DataSourceFechados _instance;
 
   DataSourceFechados._internal();
@@ -11,19 +11,43 @@ class DataSourceFechados {
     return _instance;
   }
 
-  void insert(operation) => _datasourceFechados.add(operation);
+  void insert(operation) => _datasourcefechados.add(operation);
 
-  void remove(index) => _datasourceFechados.removeAt(index);
+  void remove(index) => _datasourcefechados.removeAt(index);
 
-  List getAll() => _datasourceFechados;
+  List getAll() => _datasourcefechados;
 
   List getAllAsString() {
     var lista = [];
     int ind = 0;
-    for (var i in _datasourceFechados){
-        lista.add("${i.titulo};${i.descricao};${i.morada};${i.data};${i.estado};$ind");
-        ind++;
+    for (var i in _datasourcefechados){
+      lista.add("${i.titulo};${i.descricao};${i.morada};${i.data};${i.estado};$ind");
+      ind++;
     }
     return lista;
+  }
+
+  String getTitulo(int indice){
+    return _datasourcefechados[indice].titulo;
+  }
+
+  String getDescricao(int indice){
+    return _datasourcefechados[indice].descricao;
+  }
+
+  String getMorada(int indice){
+    return _datasourcefechados[indice].morada;
+  }
+
+  String getData(int indice){
+    return _datasourcefechados[indice].data;
+  }
+
+  String getEstado(int indice){
+    return _datasourcefechados[indice].estado;
+  }
+
+  void setEstado(int indice, String estadoNovo){
+    _datasourcefechados[indice].estado = estadoNovo;
   }
 }
