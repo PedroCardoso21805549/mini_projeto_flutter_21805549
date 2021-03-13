@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mini_projeto_flutter_21805549/BLoC/incidentes.dart';
 import 'package:intl/intl.dart';
 
-class FormularioIncidente extends StatefulWidget {
+class FormularioIncidenteScreen extends StatefulWidget {
   @override
-  _FormularioIncidenteState createState() => _FormularioIncidenteState();
+  _FormularioIncidenteScreenState createState() => _FormularioIncidenteScreenState();
 }
 
-class _FormularioIncidenteState extends State<FormularioIncidente>{
+class _FormularioIncidenteScreenState extends State<FormularioIncidenteScreen>{
   final _formKey = GlobalKey<FormState>();
   final _controllerTitulo = TextEditingController();
   final _controllerDescricao = TextEditingController();
@@ -31,67 +32,66 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
           builder:(BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             return Form(
               key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.title),
-                    title: TextFormField(
-                      controller: _controllerTitulo,
-                      validator: (value) {
-                        if(value.isEmpty){
-                          return "Por favor preencha este campo";
-                        }
-                        if(value.length > 25){
-                          return "Excedeu o tamanho do título";
-                        }
-                        for(var h=0; h<snapshot.data.length; h++){
-                          if(value == snapshot.data[h].tituloIncidente){
-                            return "Incidente já existente";
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.title),
+                      title: TextFormField(
+                        controller: _controllerTitulo,
+                        validator: (value) {
+                          if(value.isEmpty){
+                            return "Por favor preencha este campo";
                           }
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Título *",
+                          return null;
+                        },
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(25),
+                        ],
+                        decoration: InputDecoration(
+                          hintText: "Título *",
+                        ),
                       ),
                     ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.description),
-                    title: TextFormField(
-                      controller: _controllerDescricao,
-                      validator: (value) {
-                        if(value.isEmpty){
-                          return "Por favor preencha este campo";
-                        }
-                        if(value.length < 100 || value.length > 200){
-                          return "A descrição deve conter entre 100 a 200 caracteres";
-                        }
-                        return null;
-                      },
-                      minLines: 4,
-                      maxLines: 7,
-                      decoration: InputDecoration(
-                        hintText: "Descrição *",
+                    ListTile(
+                      leading: Icon(Icons.description),
+                      title: TextFormField(
+                        controller: _controllerDescricao,
+                        validator: (value) {
+                          if(value.isEmpty){
+                            return "Por favor preencha este campo";
+                          }
+                          if(value.length < 100){
+                            return "A descrição deve conter entre 100 a 200 caracteres";
+                          }
+                          return null;
+                        },
+                        minLines: 4,
+                        maxLines: 10,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(200),
+                        ],
+                        decoration: InputDecoration(
+                          hintText: "Descrição *",
+                        ),
                       ),
                     ),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.add_location),
-                    title: TextFormField(
-                      controller: _controllerMorada,
-                      validator: (value) {
-                        if(value.length > 60){
-                          return "Excedeu o tamanho da morada";
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Morada",
+                    ListTile(
+                      leading: Icon(Icons.add_location),
+                      title: TextFormField(
+                        controller: _controllerMorada,
+                        minLines: 1,
+                        maxLines: 3,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(60),
+                        ],
+                        decoration: InputDecoration(
+                          hintText: "Morada",
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -118,7 +118,7 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
                 incidentes.insert(_controllerTitulo.text, _controllerDescricao.text, _controllerMorada.text, date, "Aberto");
 
                 Navigator.pop(context);
-                //Navigator.pop(context);
+                Navigator.pop(context);
               }
             },
             tooltip: 'Guardar',
@@ -130,9 +130,12 @@ class _FormularioIncidenteState extends State<FormularioIncidente>{
 
   @override
   void dispose() {
+    incidentes.dispose();
     _controllerTitulo.dispose();
     _controllerDescricao.dispose();
     _controllerMorada.dispose();
     super.dispose();
   }
+
+
 }

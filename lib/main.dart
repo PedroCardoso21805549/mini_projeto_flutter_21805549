@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mini_projeto_flutter_21805549/incidentes_fechadosscreen.dart';
 import 'package:mini_projeto_flutter_21805549/incidentesscreen.dart';
 import 'package:mini_projeto_flutter_21805549/BLoC/incidentes.dart';
-import 'package:mini_projeto_flutter_21805549/BLoC/incidentes_fechados.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +20,33 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: MyHomePage(title: 'Municipio Resolve'),
+      home: SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(
+        Duration(seconds: 3),
+            () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => MyHomePage(title: 'Municipio Resolve'))));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white30,
+      body: Center(
+        child: Image.asset('lib/assets/splashscreen.png'),
+      ),
     );
   }
 }
@@ -33,12 +61,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final incidentes = Incidentes();
-  final incidentesFechados = IncidentesFechados();
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final date = DateFormat('yyyy/MM/dd – kk:mm').format(now);
+    incidentes.insert("teste1", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mollis massa, sit amet at.", "teste1", date, "Aberto");
+    incidentes.insert("teste2", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In laoreet erat et orci consectetur elementum. Nulla hendrerit augue in urna euismod, quis consequat nunc euismod. Integer vel neque molestie.", "", date, "Aberto");
+
     return Scaffold(
       backgroundColor: Colors.white30,
       appBar: AppBar(
@@ -78,9 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => IncidentesScreen(
-                        incidentes: incidentes,
-                      )),
+                      MaterialPageRoute(builder: (context) => IncidentesScreen()),
                     );
                   },
                 ),
@@ -96,9 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => IncidentesFechadosScreen(
-                        incidentesFechados: incidentesFechados,
-                      )),
+                      MaterialPageRoute(builder: (context) => IncidentesFechadosScreen()),
                     );
                   },
                 ),

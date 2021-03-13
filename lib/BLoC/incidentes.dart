@@ -54,7 +54,7 @@ class Incidentes {
     dataSource.remove(indice);
   }
 
-  ObjectIncidente insert(String titulo, String descricao, String morada, String data, String estado,){
+  void insert(String titulo, String descricao, String morada, String data, String estado,){
     final obj = ObjectIncidente(
       titulo: titulo,
       descricao: descricao,
@@ -63,6 +63,17 @@ class Incidentes {
       estado: estado,
     );
     dataSource.insert(obj);
+  }
+
+  void alter(String titulo, String descricao, String morada, String data, String estado, int indice){
+    final obj = ObjectIncidente(
+      titulo: titulo,
+      descricao: descricao,
+      morada: morada,
+      data: data,
+      estado: estado,
+    );
+    dataSource.alter(indice, obj);
   }
 
   void dispose() => _controller.close();

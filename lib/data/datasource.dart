@@ -17,6 +17,11 @@ class DataSource {
 
   void remove(index) => _datasource.removeAt(index);
 
+  void alter(int index, ObjectIncidente obj) {
+    _datasource.insert(index, obj);
+    _datasource.removeAt(index+1);
+  }
+
   List getAll() => _datasource;
 
   List getAllAsString() {
