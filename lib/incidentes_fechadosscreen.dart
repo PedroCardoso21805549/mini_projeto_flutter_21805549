@@ -19,6 +19,7 @@ class _IncidentesFechadosScreenState extends State<IncidentesFechadosScreen>{
         primarySwatch: Colors.deepOrange,
       ),
       home: Scaffold(
+        backgroundColor: Colors.white30,
         appBar: AppBar(
           title: Text("Lista de Incidentes Fechados"),
         ),
@@ -34,8 +35,11 @@ class _IncidentesFechadosScreenState extends State<IncidentesFechadosScreen>{
                   var estado = snapshot.data[index].estadoIncidente;
                   var indice = index;
                   if(estado == "Fechado") {
-                    return Card(
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
                       child: ListTile(
+                          leading: Icon(Icons.zoom_in_outlined),
+                          tileColor: Colors.white,
                           title: Text(titulo),
                           subtitle: Text(date),
                           onTap: () {

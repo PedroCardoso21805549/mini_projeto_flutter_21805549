@@ -42,42 +42,43 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                 var date = snapshot.data[index].dataIncidente;
                 var estado = snapshot.data[index].estadoIncidente;
                 if(estado=="Resolvido" || estado=="Aberto") {
-                  return Dismissible(
-                    key: UniqueKey(),
-                    direction: DismissDirection.horizontal,
-                    background: Container(color: Colors.red),
-                    confirmDismiss: (direction) async {
-                      if (direction == DismissDirection.startToEnd && estado == "Resolvido") {
-                        incidentes.setEstado(index, "Fechado");
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Dismissible(
+                      key: UniqueKey(),
+                      direction: DismissDirection.horizontal,
+                      background: Container(color: Colors.red),
+                      confirmDismiss: (direction) async {
+                        if (direction == DismissDirection.startToEnd && estado == "Resolvido") {
+                          incidentes.setEstado(index, "Fechado");
 
-                        final snackbar = SnackBar(
-                          content: Text(
-                              'O seu incidente foi dado como fechado.'),
-                          action: SnackBarAction(
-                            label: 'Close',
-                            onPressed: () {},
-                          ),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                        FocusScope.of(context).unfocus();
-                        return true;
-                      } else {
-                        final snackbar = SnackBar(
-                          content: Text(
-                              'Este incidente ainda não se encontra resolvido, por isso não pode transitar para a lista dos fechados.'),
-                          action: SnackBarAction(
-                            label: 'Close',
-                            onPressed: () {},
-                          ),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                        FocusScope.of(context).unfocus();
-                        return false;
-                      }
-                    },
-                    child: Card(
+                          final snackbar = SnackBar(
+                            content: Text(
+                                'O seu incidente foi dado como fechado.'),
+                            action: SnackBarAction(
+                              label: 'Close',
+                              onPressed: () {},
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                          FocusScope.of(context).unfocus();
+                          return true;
+                        } else {
+                          final snackbar = SnackBar(
+                            content: Text(
+                                'Este incidente ainda não se encontra resolvido, por isso não pode transitar para a lista dos fechados.'),
+                            action: SnackBarAction(
+                              label: 'Close',
+                              onPressed: () {},
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                          FocusScope.of(context).unfocus();
+                          return false;
+                        }
+                      },
                       child: ListTile(
-                        leading: Icon(Icons.remove_red_eye),
+                        leading: Icon(Icons.zoom_in_outlined),
                         tileColor: estado == "Resolvido" ? Colors.green : Colors.white,
                         title: Text(titulo),
                         subtitle: Text(date),
@@ -129,7 +130,16 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
 
                                 final tam = datasource.getAll().length;
                                 final lista = datasource.getAllAsString();
-                                if (tam == 0) {
+                                var porResolver = 0;
+
+                                for(var l in lista){
+                                  var dados = l.split(";");
+                                  if(dados[4] == "Aberto"){
+                                    porResolver = 1;
+                                  }
+                                }
+
+                                if (tam == 0 || porResolver == 0) {
                                   final snackbar = SnackBar(
                                     content: Text('Não existem incidentes para resolver.'),
                                     action: SnackBarAction(
@@ -165,7 +175,15 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                                     count = 0;
                                   }
 
-                                  if(countResolvidos == tam) {
+                                  var abertosResolvidos = 0;
+                                  for(var h in lista){
+                                    var dados = h.split(";");
+                                    if(dados[4] == "Aberto" || dados[4] == "Resolvido"){
+                                      abertosResolvidos++;
+                                    }
+                                  }
+
+                                  if(countResolvidos == abertosResolvidos) {
                                     final snackbar = SnackBar(
                                       content: Text('Os incidentes encontram-se todos resolvidos.'),
                                       action: SnackBarAction(
