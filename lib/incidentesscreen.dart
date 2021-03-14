@@ -175,37 +175,15 @@ class _IncidentesScreenState extends State<IncidentesScreen>{
                                     count = 0;
                                   }
 
-                                  var abertosResolvidos = 0;
-                                  for(var h in lista){
-                                    var dados = h.split(";");
-                                    if(dados[4] == "Aberto" || dados[4] == "Resolvido"){
-                                      abertosResolvidos++;
-                                    }
-                                  }
-
-                                  if(countResolvidos == abertosResolvidos) {
-                                    final snackbar = SnackBar(
-                                      content: Text('Os incidentes encontram-se todos resolvidos.'),
-                                      action: SnackBarAction(
-                                        label: 'Close',
-                                        onPressed: () {},
-                                      ),
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        snackbar);
-                                    FocusScope.of(context).unfocus();
-                                  } else {
-                                    final snackbar = SnackBar(
-                                      content: Text('Um dos seus incidentes foi dado como resolvido.'),
-                                      action: SnackBarAction(
-                                        label: 'Close',
-                                        onPressed: () {},
-                                      ),
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        snackbar);
-                                    FocusScope.of(context).unfocus();
-                                  }
+                                  final snackbar = SnackBar(
+                                    content: Text('Um dos seus incidentes foi dado como resolvido.'),
+                                    action: SnackBarAction(
+                                      label: 'Close',
+                                      onPressed: () {},
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                                  FocusScope.of(context).unfocus();
                                 }
                               /*},
                             );*/
