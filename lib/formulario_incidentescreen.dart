@@ -45,6 +45,8 @@ class _FormularioIncidenteScreenState extends State<FormularioIncidenteScreen>{
                           }
                           return null;
                         },
+                        minLines: 1,
+                        maxLines: 2,
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(25),
                         ],
